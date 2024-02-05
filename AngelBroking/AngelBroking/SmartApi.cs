@@ -1274,5 +1274,65 @@ namespace AngelBroking
             }
             return res;
         }
+
+        /// <summary>
+        /// Get Option Greek
+        /// </summary>
+        /// <param name="Request"></param>
+        /// <returns></returns>
+        public OutputBaseClass GetOptionGreek(OptionGreekRequest Request)
+        {
+            OutputBaseClass res = new OutputBaseClass();
+            res.status = true;
+            res.http_code = "200";
+            try
+            {
+                AngelToken Token = this.Token;
+                if (Token != null)
+                {
+                    if (ValidateToken(Token))
+                    {
+                        string URL = APIURL + "/rest/secure/angelbroking/marketData/v1/optionGreek";
+
+                        string PostData = JsonConvert.SerializeObject(Request);
+
+                        string json = POSTWebRequest(Token, URL, PostData);
+                        if (!json.Contains("PostError:"))
+                        {
+                            OptionGreekResponse greekResponse = JsonConvert.DeserializeObject<OptionGreekResponse>(json);
+                            res.OptionGreekResponse = greekResponse;
+                            res.status = greekResponse.status;
+                            res.http_error = greekResponse.message;
+                            res.http_code = greekResponse.errorcode;
+                        }
+                        else
+                        {
+                            res.status = false;
+                            res.http_code = "404";
+                            res.http_error = json.Replace("PostError:", "");
+                        }
+                    }
+                    else
+                    {
+                        res.status = false;
+                        res.http_code = "404";
+                        res.http_error = "The token is invalid";
+                    }
+                }
+                else
+                {
+                    res.status = false;
+                    res.http_code = "404";
+                    res.http_error = "The token is invalid";
+                }
+            }
+            catch (Exception ex)
+            {
+                res.status = false;
+                res.http_code = "404";
+                res.http_error = ex.Message;
+            }
+            return res;
+        }
     }
 }

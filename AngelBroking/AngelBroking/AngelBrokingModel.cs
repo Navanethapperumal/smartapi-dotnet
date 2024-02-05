@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -319,6 +320,32 @@ namespace AngelBroking
         public string errorcode { get; set; }
         public List<List<object>> data { get; set; }
     }
+
+
+    public class OptionGreekResponse
+    {
+        public bool status { get; set; }
+        public string message { get; set; }
+        public string errorcode { get; set; }
+        [JsonProperty("data")]
+        public List<OptionGreekData> OptionGreeks { get; set; }
+    }
+
+    public class OptionGreekData
+    {
+        public string name { get; set; }
+        public string expiry { get; set; }
+        public string strikePrice { get; set; }
+        public string optionType { get; set; }
+        public string delta { get; set; }
+        public string gamma { get; set; }
+        public string theta { get; set; }
+        public string vega { get; set; }
+        public string impliedVolatility { get; set; }
+        public string tradeVolume { get; set; }
+    }
+
+
     public class OutputBaseClass
     {
         public bool status { get; set; }
@@ -344,6 +371,7 @@ namespace AngelBroking
         public RuleDetailsResponse RuleDetailsResponse { get; set; }
         public RuleListResponse RuleListResponse { get; set; }
         public CandleDataResponse GetCandleDataResponse { get; set; }
+        public OptionGreekResponse OptionGreekResponse { get; set; }
     }
 
     /* Input Classes*/
@@ -435,6 +463,12 @@ namespace AngelBroking
         public string symboltoken { get; set; }
         public string exchange { get; set; }
         public string tradingsymbol { get; set; }
+    }
+
+    public class OptionGreekRequest
+    {
+        public string name { get; set; }
+        public string expirydate { get; set; }
     }
     #endregion
 }
